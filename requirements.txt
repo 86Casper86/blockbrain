@@ -1,0 +1,11 @@
+import pandas as pd
+
+def extract_features(transactions):
+    df = pd.DataFrame(transactions)
+    features = pd.DataFrame()
+    features["gas_price"] = df["gasPrice"].astype(float)
+    features["value_eth"] = df["value"].astype(float) / 1e18
+    features["to_contract"] = df["to"].apply(lambda x: x.startswith("0x") if x else 0).astype(int)
+    features["input_size"] = df["input"].apply(lambda x: len(x))
+    features["has_internal_calls"] = df.get("internalCalls", pd.Series([0]*len(df)))
+    return features
